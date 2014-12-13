@@ -11,6 +11,9 @@ import android.widget.EditText;
 
 import com.ipl.bathrugby.models.Seat;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -32,7 +35,13 @@ public class MainActivity extends ActionBarActivity {
                 // Create a seat object to pass to the next activity
                 Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
 
-                startStadiumViewActivity(mySeat);
+                //ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+                //FlashTask task = new FlashTask(mySeat,4);
+                //scheduler.scheduleAtFixedRate(task,0,1000, TimeUnit.MILLISECONDS);
+
+                //startStadiumViewActivity(mySeat);
+
+                startFlashActivity(mySeat);
 
             }
         });
@@ -45,6 +54,12 @@ public class MainActivity extends ActionBarActivity {
 
     private void startStadiumViewActivity(Seat mySeat) {
         Intent myIntent = new Intent(this,StadiumView.class);
+        myIntent.putExtra("userSeat", mySeat);
+        startActivity(myIntent);
+    }
+
+    private void startFlashActivity(Seat mySeat) {
+        Intent myIntent = new Intent(this,FlashActivity.class);
         myIntent.putExtra("userSeat", mySeat);
         startActivity(myIntent);
     }

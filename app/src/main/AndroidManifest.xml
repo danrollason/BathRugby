@@ -20,6 +20,16 @@
             android:name=".StadiumView"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".FlashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_flash"
+            android:parentActivityName=".StadiumView"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ipl.bathrugby.StadiumView" />
+        </activity>
     </application>
 
 </manifest>
