@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.ipl.bathrugby.models.Seat;
 
@@ -22,8 +23,11 @@ public class MainActivity extends ActionBarActivity {
         nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
 
-                int rowNumber = 5;
-                int seatNumber = 23;
+                EditText rowSelection = (EditText) findViewById(R.id.rowSelection);
+                int rowNumber = convertRowLetterToNumber(rowSelection.getText().toString().charAt(0));
+
+                EditText seatSelection = (EditText) findViewById(R.id.seatSelection);
+                int seatNumber = Integer.parseInt(seatSelection.getText().toString());
 
                 // Create a seat object to pass to the next activity
                 Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
@@ -32,6 +36,11 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+    }
+
+    private int convertRowLetterToNumber(Character rowLetter){
+        // Get the ascii code of the character and subtract 65 (A = 65)
+        return ((int) rowLetter) - 65;
     }
 
     private void startStadiumViewActivity(Seat mySeat) {
