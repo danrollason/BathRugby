@@ -2,7 +2,6 @@ package com.ipl.bathrugby;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.View;
 
 import com.ipl.bathrugby.models.Seat;
 
@@ -15,7 +14,6 @@ public class FlashTask implements Runnable {
     private int totalNumberOfSeats;
     private static int counter = 0;
     private Activity flashActivity;
-
 
     public FlashTask(Seat mySeat, int totalNumberOfSeats, Activity flashActivity){
         this.mySeat = mySeat;

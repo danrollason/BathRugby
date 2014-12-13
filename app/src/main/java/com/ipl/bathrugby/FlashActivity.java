@@ -3,13 +3,10 @@ package com.ipl.bathrugby;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
+import android.view.MenuItem;
 
 import com.ipl.bathrugby.models.Seat;
 import com.ipl.bathrugby.util.SystemUiHider;
@@ -31,17 +28,19 @@ public class FlashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_flash);
-
         StartSchedule startSched = new StartSchedule((Seat) (getIntent().getSerializableExtra("userSeat")),this);
         startSched.execute();
-
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getActionBar().hide();
     }
 

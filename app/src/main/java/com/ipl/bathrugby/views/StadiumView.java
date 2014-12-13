@@ -7,25 +7,21 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import com.ipl.bathrugby.models.Seat;
+import com.ipl.bathrugby.models.Stadium;
 
 public class StadiumView extends ViewGroup {
-    public static final int ROWS = 20;
-    public static final int COLUMNS = 40;
-
     private int width = 0;
     private int height = 0;
     private int seatW = 0;
     private int leftOffset = 0;
-    private Paint seatTaken;
     private Paint seatUser;
     private Paint seatEmpty;
     private Paint border;
 
+    private Stadium stadium = new Stadium();
 
-    private Seat[][] seats = new Seat[0][0];
-
-    public void setSeats(Seat[][] seats) {
-        this.seats = seats;
+    public void setStadium(Stadium stadium) {
+        this.stadium = stadium;
     }
 
     public StadiumView(Context context) {
@@ -40,18 +36,17 @@ public class StadiumView extends ViewGroup {
 
     private void init() {
         setWillNotDraw(false);
-        seatTaken = new Paint();
-        seatTaken.setARGB(255, 0, 255, 0);
-
-        seatUser = new Paint();
-        seatUser.setARGB(255, 0, 0, 0);
-
         seatEmpty = new Paint();
         seatEmpty.setARGB(255, 80, 80, 80);
 
         border = new Paint();
         border.setARGB(255, 0,0,0);
         border.setStyle(Paint.Style.STROKE);
+
+        seatUser = new Paint();
+        seatUser.setARGB(255, 0, 0, 255);
+        seatUser.setStyle(Paint.Style.STROKE);
+        seatUser.setStrokeWidth(5);
     }
 
     @Override
@@ -65,8 +60,8 @@ public class StadiumView extends ViewGroup {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w;
         height = h;
-        seatW = (int) Math.floor(Math.min(((double)height)/ROWS, ((double)width)/COLUMNS));
-        leftOffset = (int)(0.5 * (width - seatW * COLUMNS));
+        seatW = (int) Math.floor(Math.min(((double)height)/Stadium.ROWS, ((double)width)/Stadium.COLUMNS));
+        leftOffset = (int)(0.5 * (width - seatW * Stadium.COLUMNS));
     }
 
     @Override
@@ -75,21 +70,28 @@ public class StadiumView extends ViewGroup {
 
         // Row 0 is at the bottom
         // Column 0 is on the left
-        for(int r = 0; r<ROWS; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
-                drawSeat(leftOffset + c * seatW, r * seatW, leftOffset + (c + 1) * seatW, (r + 1) * seatW, seats[r][c], canvas);
+        for(int r = 0; r< Stadium.ROWS; r++) {
+            for (int c = 0; c < Stadium.COLUMNS; c++) {
+                drawSeat(leftOffset + c * seatW, r * seatW, leftOffset + (c + 1) * seatW, (r + 1) * seatW, stadium.getSeat(r,c), canvas);
             }
         }
-
     }
 
     private void drawSeat(int left, int top, int right, int bottom, Seat seat, Canvas canvas) {
-        Paint seatPaint = seat.isTaken() ? seatTaken : seatEmpty;
+        Paint seatPaint;
+
+        if(seat.isTaken()) {
+            seatPaint = new Paint();
+            seatPaint.setColor(seat.getPixelColour());
+        } else {
+            seatPaint = seatEmpty;
+        }
+
         canvas.drawRect(left, top, right, bottom, seatPaint);
         canvas.drawRect(left, top, right, bottom, border);
 
         if(seat.isUser()) {
-            canvas.drawText("x", (float)(0.5*(left + right)), (float)(0.5*(left + right)), seatUser);
+            canvas.drawRect(left, top, right, bottom, seatUser);
         }
     }
 }

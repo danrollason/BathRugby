@@ -7,6 +7,7 @@ public class Seat implements Serializable{
     private int column;
     private boolean isUser;
     private boolean isTaken;
+    private int pixelColour = 0xffffffff;
 
     public Seat(int row, int column, boolean isUser, boolean isTaken) {
         this.row = row;
@@ -45,5 +46,13 @@ public class Seat implements Serializable{
 
     public void setTaken(boolean isTaken) {
         this.isTaken = isTaken;
+    }
+
+    public int getPixelColour() {
+        return pixelColour;
+    }
+
+    public void setPixelColour(int pixelColour) {
+        this.pixelColour = pixelColour;
     }
 }

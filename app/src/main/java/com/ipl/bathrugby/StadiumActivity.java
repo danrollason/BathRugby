@@ -9,13 +9,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.ipl.bathrugby.models.Seat;
+import com.ipl.bathrugby.models.Stadium;
 import com.ipl.bathrugby.views.StadiumView;
+
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class StadiumActivity extends ActionBarActivity {
 
     private StadiumView stadiumView;
     private Seat userSeat;
-
+    private Stadium stadium;
+    private ScheduledThreadPoolExecutor flashLogicScheduler;
+    private ScheduledThreadPoolExecutor updateScheduler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,19 +37,52 @@ public class StadiumActivity extends ActionBarActivity {
             }
         });
 
-        setupSeats();
+        setupStadium();
     }
 
-    private void setupSeats() {
-        Seat[][] seats = new Seat[StadiumView.ROWS][StadiumView.COLUMNS];
-        for(int r = 0; r<StadiumView.ROWS; r++) {
-            for (int c = 0; c <StadiumView.COLUMNS; c++) {
-                seats[r][c] = new Seat(r, c, false, false);
-            }
-        }
-        seats[userSeat.getRow()][userSeat.getColumn()] = userSeat;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startFlashLogic();
+        startUpdater();
+    }
 
-        stadiumView.setSeats(seats);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(null != flashLogicScheduler) {
+            flashLogicScheduler.shutdown();
+        }
+
+        if(null != updateScheduler) {
+            updateScheduler.shutdown();
+        }
+    }
+
+    private void startFlashLogic() {
+        flashLogicScheduler = new ScheduledThreadPoolExecutor(1);
+        FlashLogic flashLogic = new FlashLogic(stadium);
+        flashLogicScheduler.scheduleAtFixedRate(flashLogic,0,1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void startUpdater() {
+        updateScheduler = new ScheduledThreadPoolExecutor(1);
+        Runnable flashRunnable = new Runnable(){
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stadiumView.invalidate();
+                    }
+                });
+            }
+        };
+        updateScheduler.scheduleAtFixedRate(flashRunnable,0,1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void setupStadium() {
+        stadium = new Stadium(userSeat);
+        stadiumView.setStadium(stadium);
     }
 
     @Override
