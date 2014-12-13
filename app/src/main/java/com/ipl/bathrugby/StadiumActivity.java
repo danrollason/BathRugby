@@ -2,45 +2,36 @@ package com.ipl.bathrugby;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.GridView;
 
-public class StadiumView extends ActionBarActivity {
+import com.ipl.bathrugby.models.Seat;
+import com.ipl.bathrugby.views.StadiumView;
 
-    private final int ROWS = 26;
-    private final int COLUMNS = 100;
+public class StadiumActivity extends ActionBarActivity {
 
-    private GridView gridView;
-    private int userR = 5;
-    private int userC = 50;
+    private StadiumView stadiumView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupView();
+        setContentView(R.layout.stadium);
+        stadiumView = (StadiumView) findViewById(R.id.stadium_view_id);
+        setupSeats();
     }
 
-    private void setupView() {
-        setContentView(R.layout.stadium);
-        gridView = (GridView) findViewById(R.id.stadium_view_id);
-        gridView.setNumColumns(COLUMNS);
+    private void setupSeats() {
+        Seat userSeat = (Seat) getIntent().getSerializableExtra("userSeat");
 
-        LayoutInflater inflater = LayoutInflater.from(gridView.getContext());
-        for(int r = 0; r<ROWS; r++) {
-            for(int c = 0; c<COLUMNS; c++) {
-                View view;
-                if(userR == r && userC == c) {
-                    view = inflater.inflate(R.layout.seat, gridView, false);
-                } else {
-                    view = inflater.inflate(R.layout.seat_user, gridView, false);
-                }
-
-                gridView.addView(view);
+        Seat[][] seats = new Seat[StadiumView.ROWS][StadiumView.COLUMNS];
+        for(int r = 0; r<StadiumView.ROWS; r++) {
+            for (int c = 0; c <StadiumView.COLUMNS; c++) {
+                seats[r][c] = new Seat(r, c, false, false);
             }
         }
+        seats[userSeat.getRow()][userSeat.getColumn()] = userSeat;
+
+        stadiumView.setSeats(seats);
     }
 
     @Override

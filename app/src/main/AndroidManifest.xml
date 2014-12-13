@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StadiumView"
+            android:name=".StadiumActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

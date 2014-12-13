@@ -1,8 +1,19 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/stadium_view_id"
+    android:id="@+id/stadium_view_container_id"
+    android:orientation="vertical"
     tools:context=".StadiumView">
 
-</GridLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stadium"/>
+
+    <com.ipl.bathrugby.views.StadiumView
+        android:id="@+id/stadium_view_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"  />
+
+</LinearLayout>

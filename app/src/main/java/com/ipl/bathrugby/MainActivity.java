@@ -1,8 +1,8 @@
 package com.ipl.bathrugby;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +22,8 @@ public class MainActivity extends ActionBarActivity {
         nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
 
-                int rowNumber = 5;
-                int seatNumber = 23;
+                int rowNumber = 0;
+                int seatNumber = 3;
 
                 // Create a seat object to pass to the next activity
                 Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void startStadiumViewActivity(Seat mySeat) {
-        Intent myIntent = new Intent(this,StadiumView.class);
+        Intent myIntent = new Intent(this, StadiumActivity.class);
         myIntent.putExtra("userSeat", mySeat);
         startActivity(myIntent);
     }

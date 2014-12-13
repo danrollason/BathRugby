@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:background="@color/seat_taken_background"
     android:layout_margin="1dp"
+    android:layout_weight="1"
     tools:context=".StadiumView">
 
 </LinearLayout>

@@ -9,6 +9,7 @@
     <string name="row">Select your row</string>
     <string name="seat">Select your seat</string>
     <string name="next">Next</string>
+    <string name="stadium">Stadium status</string>
 
     <string-array name="stand_array">
         <item>IPL South Stand</item>
