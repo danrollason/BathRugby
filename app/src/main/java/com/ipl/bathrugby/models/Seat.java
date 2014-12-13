@@ -9,6 +9,10 @@ public class Seat implements Serializable{
     private boolean isTaken;
     private int pixelColour = 0xffffffff;
 
+    public Seat() {
+        this(0,0,false,false);
+    }
+
     public Seat(int row, int column, boolean isUser, boolean isTaken) {
         this.row = row;
         this.column = column;

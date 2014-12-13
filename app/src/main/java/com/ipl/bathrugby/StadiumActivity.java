@@ -1,6 +1,6 @@
 package com.ipl.bathrugby;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.ipl.bathrugby.models.Seat;
 import com.ipl.bathrugby.models.Stadium;
+import com.ipl.bathrugby.views.PixelFlashView;
 import com.ipl.bathrugby.views.StadiumView;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -18,17 +19,17 @@ import java.util.concurrent.TimeUnit;
 public class StadiumActivity extends ActionBarActivity {
 
     private StadiumView stadiumView;
-    private Seat userSeat;
+    private PixelFlashView pixelFlashView;
     private Stadium stadium;
+    private Seat userSeat;
     private ScheduledThreadPoolExecutor flashLogicScheduler;
     private ScheduledThreadPoolExecutor updateScheduler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stadium);
         stadiumView = (StadiumView) findViewById(R.id.stadium_view_id);
-
-        userSeat = (Seat) getIntent().getSerializableExtra("userSeat");
 
         Button nextButton = (Button) findViewById(R.id.go_to_mex_wave_id);
         nextButton.setOnClickListener(new View.OnClickListener(){
@@ -38,7 +39,7 @@ public class StadiumActivity extends ActionBarActivity {
         });
 
         setupStadium();
-    }
+}
 
     @Override
     protected void onResume() {
@@ -51,18 +52,17 @@ public class StadiumActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         if(null != flashLogicScheduler) {
-            flashLogicScheduler.shutdown();
+            flashLogicScheduler.shutdownNow();
         }
 
         if(null != updateScheduler) {
-            updateScheduler.shutdown();
+            updateScheduler.shutdownNow();
         }
     }
 
     private void startFlashLogic() {
         flashLogicScheduler = new ScheduledThreadPoolExecutor(1);
-        FlashLogic flashLogic = new FlashLogic(stadium);
-        flashLogicScheduler.scheduleAtFixedRate(flashLogic,0,1000, TimeUnit.MILLISECONDS);
+        new StartSchedule(stadium, flashLogicScheduler).execute();
     }
 
     private void startUpdater() {
@@ -73,14 +73,18 @@ public class StadiumActivity extends ActionBarActivity {
                     @Override
                     public void run() {
                         stadiumView.invalidate();
+                        if(null != pixelFlashView) {
+                            pixelFlashView.invalidate();
+                        }
                     }
                 });
             }
         };
-        updateScheduler.scheduleAtFixedRate(flashRunnable,0,1000, TimeUnit.MILLISECONDS);
+        updateScheduler.scheduleAtFixedRate(flashRunnable,0,100, TimeUnit.MILLISECONDS);
     }
 
     private void setupStadium() {
+        userSeat = (Seat) getIntent().getSerializableExtra("userSeat");
         stadium = new Stadium(userSeat);
         stadiumView.setStadium(stadium);
     }
@@ -108,8 +112,10 @@ public class StadiumActivity extends ActionBarActivity {
     }
 
     private void startFlashActivity() {
-        Intent myIntent = new Intent(this,FlashActivity.class);
-        myIntent.putExtra("userSeat", userSeat);
-        startActivity(myIntent);
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.pixel_flash);
+        pixelFlashView = (PixelFlashView) dialog.findViewById(R.id.pixel_flash_view_id);
+        pixelFlashView.setUserSeat(userSeat);
+        dialog.show();
     }
 }
