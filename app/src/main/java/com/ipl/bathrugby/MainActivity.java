@@ -1,19 +1,14 @@
 package com.ipl.bathrugby;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.ipl.bathrugby.models.Seat;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -25,26 +20,24 @@ public class MainActivity extends ActionBarActivity {
         Button nextButton = (Button) findViewById(R.id.seatSelectionNext);
         nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                String rowSelection = ((EditText) findViewById(R.id.rowSelection)).getText().toString();
+                String seatSelection = ((EditText) findViewById(R.id.seatSelection)).getText().toString();
+                boolean isValid = validateInputs(rowSelection, seatSelection);
 
-                EditText rowSelection = (EditText) findViewById(R.id.rowSelection);
-                int rowNumber = convertRowLetterToNumber(rowSelection.getText().toString().charAt(0));
+                if(isValid) {
+                    int rowNumber = convertRowLetterToNumber(rowSelection.charAt(0));
+                    int seatNumber = Integer.parseInt(seatSelection);
 
-                EditText seatSelection = (EditText) findViewById(R.id.seatSelection);
-                int seatNumber = Integer.parseInt(seatSelection.getText().toString());
-
-                // Create a seat object to pass to the next activity
-                Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
-
-                //ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
-                //FlashTask task = new FlashTask(mySeat,4);
-                //scheduler.scheduleAtFixedRate(task,0,1000, TimeUnit.MILLISECONDS);
-
-                //startStadiumViewActivity(mySeat);
-
-                startFlashActivity(mySeat);
-
+                    // Create a seat object to pass to the next activity
+                    Seat mySeat = new Seat(rowNumber, seatNumber, true, true);
+                    startStadiumViewActivity(mySeat);
+                }
             }
         });
+    }
+
+    private boolean validateInputs(String row, String seat) {
+        return null != row && !row.isEmpty() && null != seat && !seat.isEmpty();
     }
 
     private int convertRowLetterToNumber(Character rowLetter){
@@ -53,17 +46,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void startStadiumViewActivity(Seat mySeat) {
-        Intent myIntent = new Intent(this,StadiumView.class);
+        Intent myIntent = new Intent(this, StadiumActivity.class);
         myIntent.putExtra("userSeat", mySeat);
         startActivity(myIntent);
     }
-
-    private void startFlashActivity(Seat mySeat) {
-        Intent myIntent = new Intent(this,FlashActivity.class);
-        myIntent.putExtra("userSeat", mySeat);
-        startActivity(myIntent);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,6 +71,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-
     }
 }
