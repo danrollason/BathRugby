@@ -5,9 +5,12 @@ import com.ipl.bathrugby.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuItem;
@@ -121,10 +124,9 @@ public class FlashActivity extends Activity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
-        ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
-        FlashTask task = new FlashTask((Seat) (getIntent().getSerializableExtra("userSeat")),4,this);
-        scheduler.scheduleAtFixedRate(task,0,1000, TimeUnit.MILLISECONDS);
 
+        StartSchedule startSched = new StartSchedule((Seat) (getIntent().getSerializableExtra("userSeat")),this);
+        startSched.execute();
     }
 
 
@@ -200,5 +202,38 @@ public class FlashActivity extends Activity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    private class StartSchedule extends AsyncTask {
+
+        private Seat mySeat;
+        private Activity myActivity;
+
+        public StartSchedule(Seat mySeat, Activity myActivity){
+            this.mySeat = mySeat;
+            this.myActivity = myActivity;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            SntpClient client = new SntpClient();
+            long now = 0;
+            if (client.requestTime("pool.ntp.org",10000)) {
+                now = client.getNtpTime() + SystemClock.elapsedRealtime() - client.getNtpTimeReference();
+            }
+
+
+            Log.i("Bath Rugby", "Now " + now);
+
+            long offset = ((( now / 10000) * 10000) + 10000) - now;
+
+            Log.i("Bath Rugby", "Offset " + offset);
+
+            ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+            FlashTask task = new FlashTask(mySeat,4,myActivity);
+            scheduler.scheduleAtFixedRate(task,offset,1000, TimeUnit.MILLISECONDS);
+
+            return null;
+        }
     }
 }
