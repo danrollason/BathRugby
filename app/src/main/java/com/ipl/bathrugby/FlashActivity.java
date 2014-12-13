@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class FlashActivity extends Activity {
 
+    private ScheduledThreadPoolExecutor scheduler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,12 @@ public class FlashActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void onDestroy(){
+        super.onDestroy();
+        this.scheduler.shutdownNow();
+    }
+
     private class StartSchedule extends AsyncTask {
 
         private Seat mySeat;
@@ -78,7 +86,7 @@ public class FlashActivity extends Activity {
 
             Log.i("Bath Rugby", "Offset " + offset);
 
-            ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+            scheduler = new ScheduledThreadPoolExecutor(1);
             FlashTask task = new FlashTask(mySeat,4,myActivity);
             scheduler.scheduleAtFixedRate(task,offset,1000, TimeUnit.MILLISECONDS);
 
