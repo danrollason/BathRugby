@@ -1,6 +1,8 @@
 package com.ipl.bathrugby.models;
 
-public class Seat {
+import java.io.Serializable;
+
+public class Seat implements Serializable{
     private int row;
     private int column;
     private boolean isUser;

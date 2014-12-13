@@ -1,9 +1,14 @@
 package com.ipl.bathrugby;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import com.ipl.bathrugby.models.Seat;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -13,6 +18,26 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button nextButton = (Button) findViewById(R.id.seatSelectionNext);
+        nextButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+
+                int rowNumber = 5;
+                int seatNumber = 23;
+
+                // Create a seat object to pass to the next activity
+                Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
+
+                startStadiumViewActivity(mySeat);
+
+            }
+        });
+    }
+
+    private void startStadiumViewActivity(Seat mySeat) {
+        Intent myIntent = new Intent(this,StadiumView.class);
+        myIntent.putExtra("userSeat", mySeat);
+        startActivity(myIntent);
     }
 
 
@@ -36,5 +61,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 }
