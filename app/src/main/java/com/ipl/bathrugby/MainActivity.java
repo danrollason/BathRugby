@@ -7,9 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
+import android.widget.EditText;
 import com.ipl.bathrugby.models.Seat;
-
 
 public class MainActivity extends ActionBarActivity {
 
@@ -21,17 +20,29 @@ public class MainActivity extends ActionBarActivity {
         Button nextButton = (Button) findViewById(R.id.seatSelectionNext);
         nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                String rowSelection = ((EditText) findViewById(R.id.rowSelection)).getText().toString();
+                String seatSelection = ((EditText) findViewById(R.id.seatSelection)).getText().toString();
+                boolean isValid = validateInputs(rowSelection, seatSelection);
 
-                int rowNumber = 0;
-                int seatNumber = 3;
+                if(isValid) {
+                    int rowNumber = convertRowLetterToNumber(rowSelection.charAt(0));
+                    int seatNumber = Integer.parseInt(seatSelection);
 
-                // Create a seat object to pass to the next activity
-                Seat mySeat = new Seat(rowNumber,seatNumber,true,true);
-
-                startStadiumViewActivity(mySeat);
-
+                    // Create a seat object to pass to the next activity
+                    Seat mySeat = new Seat(rowNumber, seatNumber, true, true);
+                    startStadiumViewActivity(mySeat);
+                }
             }
         });
+    }
+
+    private boolean validateInputs(String row, String seat) {
+        return null != row && !row.isEmpty() && null != seat && !seat.isEmpty();
+    }
+
+    private int convertRowLetterToNumber(Character rowLetter){
+        // Get the ascii code of the character and subtract 65 (A = 65)
+        return ((int) rowLetter) - 65;
     }
 
     private void startStadiumViewActivity(Seat mySeat) {
@@ -39,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
         myIntent.putExtra("userSeat", mySeat);
         startActivity(myIntent);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,6 +71,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-
     }
 }
