@@ -12,11 +12,15 @@ import java.util.concurrent.TimeUnit;
 public class StartSchedule extends AsyncTask {
 
     private Stadium stadium;
-    private ScheduledThreadPoolExecutor scheduler;
+    private ScheduledThreadPoolExecutor flashScheduler;
+    private ScheduledThreadPoolExecutor updateScheduler;
+    private Runnable updateRunnable;
 
-    public StartSchedule(Stadium stadium, ScheduledThreadPoolExecutor scheduler){
+    public StartSchedule(Stadium stadium,  ScheduledThreadPoolExecutor flashScheduler, ScheduledThreadPoolExecutor updateScheduler, Runnable updateRunnable){
         this.stadium = stadium;
-        this.scheduler = scheduler;
+        this.flashScheduler = flashScheduler;
+        this.updateScheduler = updateScheduler;
+        this.updateRunnable = updateRunnable;
     }
 
     @Override
@@ -34,8 +38,8 @@ public class StartSchedule extends AsyncTask {
 
         Log.i("Bath Rugby", "Offset " + offset);
 
-        FlashLogic flashLogic = new FlashLogic(stadium);
-        scheduler.scheduleAtFixedRate(flashLogic,offset,1000, TimeUnit.MILLISECONDS);
+        flashScheduler.scheduleAtFixedRate(new FlashLogic(stadium),offset,1000, TimeUnit.MILLISECONDS);
+        updateScheduler.scheduleAtFixedRate(updateRunnable,offset,100, TimeUnit.MILLISECONDS);
 
         return null;
     }

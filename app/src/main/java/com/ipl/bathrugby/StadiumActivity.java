@@ -1,6 +1,7 @@
 package com.ipl.bathrugby;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -14,16 +15,16 @@ import com.ipl.bathrugby.views.PixelFlashView;
 import com.ipl.bathrugby.views.StadiumView;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class StadiumActivity extends ActionBarActivity {
 
     private StadiumView stadiumView;
-    private PixelFlashView pixelFlashView;
+    Dialog pixelFlashDialog;
     private Stadium stadium;
     private Seat userSeat;
     private ScheduledThreadPoolExecutor flashLogicScheduler;
     private ScheduledThreadPoolExecutor updateScheduler;
+    private boolean isFlashing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,7 @@ public class StadiumActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startFlashLogic();
-        startUpdater();
+        startSchedules();
     }
 
     @Override
@@ -58,29 +58,39 @@ public class StadiumActivity extends ActionBarActivity {
         if(null != updateScheduler) {
             updateScheduler.shutdownNow();
         }
+
+        isFlashing = false;
     }
 
-    private void startFlashLogic() {
+    private void startSchedules() {
         flashLogicScheduler = new ScheduledThreadPoolExecutor(1);
-        new StartSchedule(stadium, flashLogicScheduler).execute();
-    }
-
-    private void startUpdater() {
         updateScheduler = new ScheduledThreadPoolExecutor(1);
-        Runnable flashRunnable = new Runnable(){
+        Runnable updateRunnable = new Runnable(){
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        stadiumView.invalidate();
-                        if(null != pixelFlashView) {
-                            pixelFlashView.invalidate();
+                        if(null != pixelFlashDialog) {
+                            if(!isFlashing) {
+                                View stopwatch = pixelFlashDialog.findViewById(R.id.pixel_flash_stopwatch_id);
+                                if (null != stopwatch) {
+                                    stopwatch.setVisibility(View.GONE);
+                                }
+                            }
+
+                            View pixelFlashView = pixelFlashDialog.findViewById(R.id.pixel_flash_view_id);
+                            if (null != pixelFlashView) {
+                                pixelFlashView.invalidate();
+                            }
                         }
+
+                        stadiumView.invalidate();
+                        isFlashing = true;
                     }
                 });
             }
         };
-        updateScheduler.scheduleAtFixedRate(flashRunnable,0,100, TimeUnit.MILLISECONDS);
+        new StartSchedule(stadium, flashLogicScheduler, updateScheduler, updateRunnable).execute();
     }
 
     private void setupStadium() {
@@ -112,10 +122,22 @@ public class StadiumActivity extends ActionBarActivity {
     }
 
     private void startFlashActivity() {
-        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-        dialog.setContentView(R.layout.pixel_flash);
-        pixelFlashView = (PixelFlashView) dialog.findViewById(R.id.pixel_flash_view_id);
+        pixelFlashDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        pixelFlashDialog.setContentView(R.layout.pixel_flash);
+        PixelFlashView pixelFlashView = (PixelFlashView) pixelFlashDialog.findViewById(R.id.pixel_flash_view_id);
         pixelFlashView.setUserSeat(userSeat);
-        dialog.show();
+
+        View stopwatch = pixelFlashDialog.findViewById(R.id.pixel_flash_stopwatch_id);
+        if(null != stopwatch && isFlashing) {
+            stopwatch.setVisibility(View.GONE);
+        }
+
+        pixelFlashDialog.show();
+        pixelFlashDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                pixelFlashDialog = null;
+            }
+        });
     }
 }

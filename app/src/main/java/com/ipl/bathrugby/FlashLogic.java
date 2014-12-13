@@ -21,9 +21,9 @@ public class FlashLogic implements Runnable {
                 Seat seat = stadium.getSeat(r, c);
                 if(seat.isTaken()) {
                     if(counter == seat.getColumn()) {
-                        seat.setPixelColour(0xff000000);
-                    } else {
                         seat.setPixelColour(0xffffffff);
+                    } else {
+                        seat.setPixelColour(0xff000000);
                     }
                 }
             }
