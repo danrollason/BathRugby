@@ -59,8 +59,12 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/seatSelectionNext"
-            android:text="@string/next">
+            android:text="@string/mexicanWave"/>
 
-        </Button>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/seatSelectionNextImageMode"
+            android:text="@string/mexicanImage"/>
     </LinearLayout>
 </ScrollView>

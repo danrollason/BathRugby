@@ -15,11 +15,15 @@ public class StartSchedule extends AsyncTask {
     private ScheduledThreadPoolExecutor flashScheduler;
     private ScheduledThreadPoolExecutor updateScheduler;
     private Runnable updateRunnable;
+    private Runnable flashRunnable;
 
-    public StartSchedule(Stadium stadium,  ScheduledThreadPoolExecutor flashScheduler, ScheduledThreadPoolExecutor updateScheduler, Runnable updateRunnable){
+    public StartSchedule(Stadium stadium,  ScheduledThreadPoolExecutor flashScheduler,
+                         ScheduledThreadPoolExecutor updateScheduler,
+                         Runnable updateRunnable, Runnable flashRunnable){
         this.stadium = stadium;
         this.flashScheduler = flashScheduler;
         this.updateScheduler = updateScheduler;
+        this.flashRunnable = flashRunnable;
         this.updateRunnable = updateRunnable;
     }
 
@@ -38,7 +42,7 @@ public class StartSchedule extends AsyncTask {
 
         Log.i("Bath Rugby", "Offset " + offset);
 
-        flashScheduler.scheduleAtFixedRate(new FlashLogic(stadium),offset,1000, TimeUnit.MILLISECONDS);
+        flashScheduler.scheduleAtFixedRate(flashRunnable,offset,300, TimeUnit.MILLISECONDS);
         updateScheduler.scheduleAtFixedRate(updateRunnable,offset,100, TimeUnit.MILLISECONDS);
 
         return null;

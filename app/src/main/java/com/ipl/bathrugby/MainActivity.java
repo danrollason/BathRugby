@@ -20,20 +20,39 @@ public class MainActivity extends ActionBarActivity {
         Button nextButton = (Button) findViewById(R.id.seatSelectionNext);
         nextButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                String rowSelection = ((EditText) findViewById(R.id.rowSelection)).getText().toString();
-                String seatSelection = ((EditText) findViewById(R.id.seatSelection)).getText().toString();
-                boolean isValid = validateInputs(rowSelection, seatSelection);
-
-                if(isValid) {
-                    int rowNumber = convertRowLetterToNumber(rowSelection.charAt(0));
-                    int seatNumber = Integer.parseInt(seatSelection);
-
-                    // Create a seat object to pass to the next activity
-                    Seat mySeat = new Seat(rowNumber, seatNumber, true, true);
-                    startStadiumViewActivity(mySeat);
+                Seat mySeat = getSeat();
+                if(null != mySeat) {
+                    startStadiumViewActivity(mySeat, false);
                 }
             }
         });
+
+        Button nextButtonImage = (Button) findViewById(R.id.seatSelectionNextImageMode);
+        nextButtonImage.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Seat mySeat = getSeat();
+                if(null != mySeat) {
+                    startStadiumViewActivity(mySeat, true);
+                }
+            }
+        });
+    }
+
+    private Seat getSeat() {
+        String rowSelection = ((EditText) findViewById(R.id.rowSelection)).getText().toString();
+        String seatSelection = ((EditText) findViewById(R.id.seatSelection)).getText().toString();
+        boolean isValid = validateInputs(rowSelection, seatSelection);
+
+        Seat mySeat = null;
+        if (isValid) {
+            int rowNumber = convertRowLetterToNumber(rowSelection.charAt(0));
+            int seatNumber = Integer.parseInt(seatSelection);
+
+            // Create a seat object to pass to the next activity
+            mySeat = new Seat(rowNumber, seatNumber, true, true);
+        }
+
+        return mySeat;
     }
 
     private boolean validateInputs(String row, String seat) {
@@ -45,9 +64,10 @@ public class MainActivity extends ActionBarActivity {
         return ((int) rowLetter) - 65;
     }
 
-    private void startStadiumViewActivity(Seat mySeat) {
+    private void startStadiumViewActivity(Seat mySeat, boolean imageFlashMode) {
         Intent myIntent = new Intent(this, StadiumActivity.class);
         myIntent.putExtra("userSeat", mySeat);
+        myIntent.putExtra("flashMode", imageFlashMode);
         startActivity(myIntent);
     }
 

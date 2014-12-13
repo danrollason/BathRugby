@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Random;
 
 public class Stadium implements Serializable{
-    public static final int ROWS = 15;
-    public static final int COLUMNS = 25;
+    public static final int ROWS = 50;
+    public static final int COLUMNS = 50;
     private static final double FRACTION_OF_SEATS_TAKEN = 0.9;
 
     private Seat[][] seats;

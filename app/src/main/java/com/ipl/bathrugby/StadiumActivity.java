@@ -25,12 +25,14 @@ public class StadiumActivity extends ActionBarActivity {
     private ScheduledThreadPoolExecutor flashLogicScheduler;
     private ScheduledThreadPoolExecutor updateScheduler;
     private boolean isFlashing;
+    private boolean imageMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stadium);
         stadiumView = (StadiumView) findViewById(R.id.stadium_view_id);
+        imageMode = getIntent().getBooleanExtra("flashMode", true);
 
         Button nextButton = (Button) findViewById(R.id.go_to_mex_wave_id);
         nextButton.setOnClickListener(new View.OnClickListener(){
@@ -90,7 +92,8 @@ public class StadiumActivity extends ActionBarActivity {
                 });
             }
         };
-        new StartSchedule(stadium, flashLogicScheduler, updateScheduler, updateRunnable).execute();
+        Runnable flashRunnable = imageMode ? new BitmapFlashLogic(stadium, this) : new FlashLogic(stadium);
+        new StartSchedule(stadium, flashLogicScheduler, updateScheduler, updateRunnable, flashRunnable).execute();
     }
 
     private void setupStadium() {

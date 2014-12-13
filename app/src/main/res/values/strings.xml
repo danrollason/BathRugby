@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BathRugby</string>
+    <string name="app_name">Bath Rugby</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="stand">Select your stand</string>
     <string name="block">Select your block</string>
     <string name="row">Select your row</string>
     <string name="seat">Select your seat</string>
-    <string name="next">Next</string>
+    <string name="mexicanImage">Mexican image!</string>
+    <string name="mexicanWave">Mexican wave!</string>
     <string name="stadium">Stadium status</string>
-    <string name="go_to_mex_wave">Start Mexican Wave!</string>
+    <string name="go_to_mex_wave">Show pixel</string>
 
     <string-array name="stand_array">
         <item>IPL South Stand</item>
