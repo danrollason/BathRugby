@@ -32,6 +32,7 @@ public class FlashTask implements Runnable {
             flashActivity.runOnUiThread(new Runnable(){
                 @Override
                 public void run() {
+                    flashActivity.findViewById(R.id.stopwatch).setVisibility(View.GONE);
                     flashActivity.findViewById(R.id.activity_flash_id).setBackgroundColor(0xffffffff);
                 }
             });
@@ -41,6 +42,7 @@ public class FlashTask implements Runnable {
             flashActivity.runOnUiThread(new Runnable(){
                 @Override
                 public void run() {
+                    flashActivity.findViewById(R.id.stopwatch).setVisibility(View.GONE);
                     flashActivity.findViewById(R.id.activity_flash_id).setBackgroundColor(0xff000000);
                 }
             });

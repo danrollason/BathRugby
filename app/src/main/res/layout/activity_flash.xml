@@ -3,4 +3,11 @@
     android:layout_height="match_parent" android:background="#0099cc"
     tools:context="com.ipl.bathrugby.FlashActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/stopwatch"
+        android:id="@+id/stopwatch"
+        />
+
 </FrameLayout>
