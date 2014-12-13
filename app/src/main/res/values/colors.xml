@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="seat_taken_background" type="color">#0F0</item>
+    <item name="seat_user_font" type="color">#000</item>
+    <item name="seat_background" type="color">#555</item>
+
+
+</resources>
